@@ -11,6 +11,7 @@ import {
 import { createUserDto } from '../dto/create-user.dto';
 import { UsersService } from '../service/users.service';
 import { updateUserDto } from '../dto/update-user.dto';
+import { NotFoundException } from '@nestjs/common';
 @Controller('auth')
 export class UsersController {
   constructor(private usersService: UsersService) {}
@@ -27,8 +28,12 @@ export class UsersController {
   }
 
   @Get()
-  findEmail(@Query('email') email: string) {
-    return this.usersService.find(email);
+  async findEmail(@Query('email') email: string) {
+    const users = await this.usersService.find(email);
+    if (!users || users.length === 0) {
+      throw new NotFoundException('User not found');
+    }
+    return users;
   }
 
   @Delete('/:id')
