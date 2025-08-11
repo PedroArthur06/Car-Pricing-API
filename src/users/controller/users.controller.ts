@@ -14,7 +14,7 @@ import { createUserDto } from '../dto/create-user.dto';
 import { UsersService } from '../service/users.service';
 import { updateUserDto } from '../dto/update-user.dto';
 import { NotFoundException } from '@nestjs/common';
-import { SerializeInterceptor } from '../../interceptors/serialize.interceptor';
+import { Serialize } from '../../interceptors/serialize.interceptor';
 import { userDto } from '../dto/user.dto';
 @Controller('auth')
 export class UsersController {
@@ -25,7 +25,7 @@ export class UsersController {
     const user = this.usersService.create(body.email, body.password);
     return user;
   }
-  @UseInterceptors(new SerializeInterceptor(userDto))
+  @Serialize(userDto)
   @Get('/:id')
   findUser(@Param('id') id: string) {
     console.log('Handler is running');

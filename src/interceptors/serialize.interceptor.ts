@@ -3,10 +3,16 @@ import {
   NestInterceptor,
   ExecutionContext,
   CallHandler,
+  UseInterceptors,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { plainToClass } from 'class-transformer';
+
+export function Serialize(dto: any) {
+  return UseInterceptors(new SerializeInterceptor(dto));
+}
+
 @Injectable()
 export class SerializeInterceptor implements NestInterceptor {
   constructor(private dto: any) {}
