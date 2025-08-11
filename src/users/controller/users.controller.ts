@@ -7,11 +7,14 @@ import {
   Patch,
   Delete,
   Query,
+  UseInterceptors,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { createUserDto } from '../dto/create-user.dto';
 import { UsersService } from '../service/users.service';
 import { updateUserDto } from '../dto/update-user.dto';
 import { NotFoundException } from '@nestjs/common';
+import { serializeInterceptor } from '../../interceptors/serialize.interceptor';
 @Controller('auth')
 export class UsersController {
   constructor(private usersService: UsersService) {}
@@ -21,9 +24,10 @@ export class UsersController {
     const user = this.usersService.create(body.email, body.password);
     return user;
   }
-
+  @UseInterceptors(serializeInterceptor)
   @Get('/:id')
   findUser(@Param('id') id: string) {
+    console.log('Handler is running');
     return this.usersService.findOne(parseInt(id));
   }
 
